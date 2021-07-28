@@ -14,14 +14,14 @@ public class LoadBalancedRoutesConfig {
     @Bean
     public RouteLocator loadBalancedRoutes(RouteLocatorBuilder builder){
         return builder.routes()
-                .route(r -> r.path("/api/v1/beer*", "/api/v1/beer/*", "/api/v1/beer/upc/*")
+                .route(r -> r.path("/api/v1/beer*", "/api/v1/beer/*", "/api/v1/upc/*")
                         .uri("lb://beer-service"))
                 .route(r -> r.path("/api/v1/customers/**")
                         .uri("lb://order-service"))
                 .route(r -> r.path("/api/v1/beer/*/inventory")
                         .filters(f -> f.circuitBreaker(c -> c.setName("inventoryCB")
                                 .setFallbackUri("forward:/inventory-failover")
-                                .setRouteId("inv-failover")
+                                .setRouteId("inventory-failover")
                         ))
                         .uri("lb://inventory-service"))
                 .route(r -> r.path("/inventory-failover/**")
